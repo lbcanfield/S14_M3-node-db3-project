@@ -14,7 +14,7 @@ const checkSchemeId = async (request, responce, next) => {
           if (!schemeCheck) {
                next({
                     status: 404,
-                    message: `scheme with scheme_id ${scheme_id} not found`
+                    message: `scheme with scheme_id ${request.params.scheme_id} not found`
                })
           }
           else {
@@ -64,9 +64,11 @@ const validateScheme = (request, responce, next) => {
 const validateStep = (request, responce, next) => {
      const { instructions, step_number } = request.body
      if (
-          !instructions ||
+          instructions === undefined ||
           typeof (instructions) !== 'string' ||
-          step_number < 1
+          !instructions.trim() ||
+          step_number < 1 ||
+          typeof (step_number) !== 'number'
      ) {
           next({
                status: 400,
