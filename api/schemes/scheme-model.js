@@ -35,80 +35,18 @@ async function findById(scheme_id) { // EXERCISE B
 
 
      return results
-     /*   
-            3B- Test in Postman and see that the resulting data does not look like a scheme,
-            but more like an array of steps each including scheme information:
-        
-              [
-                {
-                  "scheme_id": 1,
-                  "scheme_name": "World Domination",
-                  "step_id": 2,
-                  "step_number": 1,
-                  "instructions": "solve prime number theory"
-                },
-                {
-                  "scheme_id": 1,
-                  "scheme_name": "World Domination",
-                  "step_id": 1,
-                  "step_number": 2,
-                  "instructions": "crack cyber security"
-                },
-                // etc
-              ]
-        
-            4B- Using the array obtained and vanilla JavaScript, create an object with
-            the structure below, for the case _when steps exist_ for a given `scheme_id`:
-        
-              {
-                "scheme_id": 1,
-                "scheme_name": "World Domination",
-                "steps": [
-                  {
-                    "step_id": 2,
-                    "step_number": 1,
-                    "instructions": "solve prime number theory"
-                  },
-                  {
-                    "step_id": 1,
-                    "step_number": 2,
-                    "instructions": "crack cyber security"
-                  },
-                  // etc
-                ]
-              }
-        
-            5B- This is what the result should look like _if there are no steps_ for a `scheme_id`:
-        
-              {
-                "scheme_id": 7,
-                "scheme_name": "Have Fun!",
-                "steps": []
-              }
-          */
 }
 
-function findSteps(scheme_id) { // EXERCISE C
-     /*
-       1C- Build a query in Knex that returns the following data.
-       The steps should be sorted by step_number, and the array
-       should be empty if there are no steps for the scheme:
-   
-         [
-           {
-             "step_id": 5,
-             "step_number": 1,
-             "instructions": "collect all the sheep in Scotland",
-             "scheme_name": "Get Rich Quick"
-           },
-           {
-             "step_id": 4,
-             "step_number": 2,
-             "instructions": "profit",
-             "scheme_name": "Get Rich Quick"
-           }
-         ]
-     */
+async function findSteps(scheme_id) { // EXERCISE C
+     const items = await db('schemes as sc')
+          .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
+          .where('sc.scheme_id', scheme_id)
+          .orderBy('step_number')
+
+     if (items[0].step_id === null) {
+          return []
+     }
+     return items
 }
 
 function add(scheme) { // EXERCISE D
